@@ -1,0 +1,10 @@
+# dsh-tool-cloudflare 组合示例
+- name: '@libai168/dsh-tool-cloudflare'
+  config:
+    # 使用 Cloudflare 控制台创建的最小只读 API Token。
+    apiToken: 'replace-with-a-scoped-cloudflare-api-token'
+    # Worker 工具的默认 Account ID。
+    # accountId: 'account-id'
+    # DNS 工具的默认 Zone ID。
+    # zoneId: 'zone-id'
+    # timeoutMs: 15000
