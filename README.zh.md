@@ -50,6 +50,7 @@ Account 和 Zone ID 也可以在单次工具调用中传入。完整示例见 [e
 - 列表工具限制单页大小并返回分页信息，调用方可以明确继续读取。
 - 请求遵循配置的超时和工具 AbortSignal。
 - 应使用只读权限，并尽量在 Cloudflare 侧限制 Account、Zone、IP 和有效期。
+- `baseUrl` 覆盖必须是绝对的 `http(s)` 根地址。只允许公网可达主机：localhost、环回、私有、链路本地、CGNAT、组播、保留/文档/基准测试网段以及全部 IANA 特殊用途地址段都会被拒绝；DNS 结果包含任一此类地址时会在发出请求前 fail closed。
 
 ## Model Experience
 

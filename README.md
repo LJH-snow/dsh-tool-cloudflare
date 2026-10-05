@@ -50,6 +50,7 @@ The plugin intentionally has no DNS write, Worker upload, deployment, Pages, R2,
 - List limits are bounded and pagination metadata is returned so a caller can continue deliberately.
 - Requests honor the configured timeout and the tool execution AbortSignal.
 - The API token should be scoped to read-only permissions and, where possible, restricted by account, zone, IP, and expiration policy.
+- The `baseUrl` override must be an absolute `http(s)` root URL. Only publicly reachable hosts are allowed: localhost, loopback, private, link-local, CGNAT, multicast, reserved/documentation/benchmark ranges, and every IANA special-purpose block are rejected, and a hostname whose DNS results contain any such address fails closed before the request is sent.
 
 ## Model Experience
 

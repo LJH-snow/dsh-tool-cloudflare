@@ -1,19 +1,54 @@
 {
   "name": "@libai168/dsh-tool-cloudflare",
   "description": "Cloudflare REST tools for DeepSeek Harness: zones, DNS records, Workers scripts, and deployments",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
-  "exports": { ".": { "types": "./lib/types/index.d.ts", "default": "./lib/index.js" }, "./package.json": "./package.json" },
-  "files": ["lib", "README.md", "README.zh.md", "DEVELOPMENT.md", "examples", "LICENSE"],
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "README.md",
+    "README.zh.md",
+    "DEVELOPMENT.md",
+    "examples",
+    "LICENSE"
+  ],
   "license": "MIT",
-  "engines": { "node": ">=22.19" },
-  "keywords": ["deepseek-harness", "dsh", "dsh-plugin", "awesome-dsh-plugin", "cordis", "cloudflare", "workers", "dns", "edge", "agent", "plugin"],
-  "repository": { "type": "git", "url": "git+https://github.com/LJH-snow/dsh-tool-cloudflare.git" },
+  "engines": {
+    "node": ">=22.19"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "awesome-dsh-plugin",
+    "cordis",
+    "cloudflare",
+    "workers",
+    "dns",
+    "edge",
+    "agent",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LJH-snow/dsh-tool-cloudflare.git"
+  },
   "homepage": "https://github.com/LJH-snow/dsh-tool-cloudflare#readme",
-  "publishConfig": { "access": "public" },
-  "peerDependencies": { "@deepseek-ai/cordis": "^4.0.1", "@deepseek-ai/dsh-tools": "^0.1.0-rc.6" },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.6"
+  },
   "devDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
     "@deepseek-ai/dsh-tools": "^0.1.0-rc.6",
@@ -21,5 +56,10 @@
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
   },
-  "scripts": { "build": "tsc -p tsconfig.json", "prepare": "npm run build", "typecheck": "tsc --noEmit -p tsconfig.json", "test": "vitest run" }
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  }
 }

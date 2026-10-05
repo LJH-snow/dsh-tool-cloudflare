@@ -1,5 +1,7 @@
 /** Cloudflare REST API v4 client with injected fetch for deterministic tests. */
 
+import { assertSafeUrl, EndpointSecurityError, normalizeBaseUrl, type LookupImpl } from './url-security.js'
+
 export interface CloudflareClientOptions {
   apiToken?: string
   accountId?: string
@@ -7,6 +9,8 @@ export interface CloudflareClientOptions {
   baseUrl?: string
   timeoutMs?: number
   fetchImpl?: typeof fetch
+  /** Test-only DNS lookup override; production uses node:dns/promises. */
+  lookupImpl?: LookupImpl
 }
 
 export interface CloudflareAuthInfo { ok: boolean; tokenId: string; status: string; expiresOn: string; notBefore: string }
@@ -70,15 +74,22 @@ export class CloudflareClient {
   private readonly baseUrl: string
   private readonly timeoutMs: number
   private readonly fetchImpl: typeof fetch
+  private readonly lookupImpl: LookupImpl | undefined
 
   constructor(private readonly options: CloudflareClientOptions = {}) {
     this.apiToken = options.apiToken ?? ''
     this.accountId = options.accountId ?? ''
     this.zoneId = options.zoneId ?? ''
-    this.baseUrl = (options.baseUrl ?? 'https://api.cloudflare.com/client/v4').replace(/\/+$/, '')
+    try {
+      this.baseUrl = normalizeBaseUrl(options.baseUrl, 'https://api.cloudflare.com/client/v4')
+    } catch (error) {
+      if (error instanceof EndpointSecurityError) throw new CloudflareError(error.message, 400)
+      throw error
+    }
     this.timeoutMs = options.timeoutMs ?? 15_000
     if (!Number.isFinite(this.timeoutMs) || this.timeoutMs <= 0) throw new Error('timeoutMs must be a positive finite number.')
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch
+    this.lookupImpl = options.lookupImpl
   }
 
   hasToken(): boolean { return this.apiToken.length > 0 }
@@ -124,7 +135,14 @@ export class CloudflareClient {
     if (signal) { if (signal.aborted) controller.abort(signal.reason); else signal.addEventListener('abort', onAbort, { once: true }) }
     const timer = setTimeout(() => controller.abort(new Error('Cloudflare request timed out after ' + this.timeoutMs + 'ms')), this.timeoutMs)
     try {
-      const response = await this.fetchImpl(this.baseUrl + path, { ...init, headers: { accept: 'application/json', authorization: 'Bearer ' + this.apiToken, ...init.headers }, signal: controller.signal })
+      const url = new URL(this.baseUrl + path)
+      try {
+        await assertSafeUrl(url, this.lookupImpl)
+      } catch (error) {
+        if (error instanceof EndpointSecurityError) throw new CloudflareError(error.message, 400)
+        throw error
+      }
+      const response = await this.fetchImpl(url.toString(), { ...init, headers: { accept: 'application/json', authorization: 'Bearer ' + this.apiToken, ...init.headers }, signal: controller.signal })
       let body: unknown = undefined; try { body = await response.json() } catch { body = undefined }
       const envelope = record(body)
       const success = envelope.success === true
